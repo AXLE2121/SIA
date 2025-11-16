@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Password Reset</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f9f4f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .card {
+        background: #fff7fb;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        width: 320px;
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 20px;
+      }
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 6px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+      .row {
+        text-align: left;
+        font-size: 14px;
+        margin: 8px 0;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        background: #6c3bff;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      .small-text {
+        margin-top: 10px;
+        font-size: 13px;
+      }
+      .small-text a {
+        color: #6c3bff;
+        text-decoration: none;
+      }
+      #rpMsg {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #e53935;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Reset Password</h2>
+
+      <form id="resetpasswordForm">
+      <input type="password" id="rpNewPassword" placeholder="New Password" required />
+      <input type="password" id="rpConfirmPassword" placeholder="Confirm Password" required />
+
+      <button type="submit">Submit</button>
+    
+      <p id="rpMsg"></p>
+    </div>
