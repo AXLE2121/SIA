@@ -61,7 +61,7 @@
       #esMsg {
         margin-top: 10px;
         font-size: 13px;
-        color: #e53935;
+        color: #4CAF50;
       }
     </style>
   </head>
@@ -106,9 +106,17 @@
       e.preventDefault();
       msg.textContent = "";
 
-        const email = document.getElementById("esEmail").value.trim();
-  
-      });
+      const email = document.getElementById("esEmail").value.trim();
+      sendPasswordResetEmail(auth, email)
+      .then(() => {
+       msg.textContent =
+            "A password reset email has been sent. Please check your inbox.";
+       })
+       .catch((error) => {
+        console.error("Error:", error);
+       });
+   
+      }); 
     </script>
   </body>
 </html>
