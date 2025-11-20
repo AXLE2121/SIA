@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.3rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .stat-change.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stat-change.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .chart-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .activity-list {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>System Dashboard</h1>
+        <p id="currentDate"></p>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="stat-value" id="totalUsers">0</div>
+                <span class="stat-change positive">↑ 12.5%</span>
+            </div>
+            <div class="stat-card">
+                <h3>Active Sessions</h3>
+                <div class="stat-value" id="activeSessions">0</div>
+                <span class="stat-change positive">↑ 8.3%</span>
+            </div>
+            <div class="stat-card">
+                <h3>Server Load</h3>
+                <div class="stat-value" id="serverLoad">0%</div>
+                <span class="stat-change negative">↑ 3.2%</span>
+            </div>
+            <div class="stat-card">
+                <h3>Response Time</h3>
+                <div class="stat-value" id="responseTime">0ms</div>
+                <span class="stat-change positive">↓ 5.1%</span>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>System Resources</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>CPU Usage</span>
+                        <span id="cpuValue">45%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="cpuProgress" style="width: 45%"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Memory</span>
+                        <span id="memValue">62%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="memProgress" style="width: 62%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Storage</span>
+                        <span id="storageValue">38%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="storageProgress" style="width: 38%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Server Status</h3>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <span style="font-weight: 600;">Web Server</span>
+                        <span class="status-badge status-online">Online</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <span style="font-weight: 600;">Database</span>
+                        <span class="status-badge status-online">Online</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <span style="font-weight: 600;">API Gateway</span>
+                        <span class="status-badge status-warning">Warning</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <span style="font-weight: 600;">Cache Server</span>
+                        <span class="status-badge status-online">Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-list">
+            <h3 style="margin-bottom: 1rem;">Recent Activity</h3>
+            <div class="activity-item">
+                <div class="activity-icon" style="background: #667eea;">U</div>
+                <div class="activity-content">
+                    <div class="activity-title">New user registration</div>
+                    <div class="activity-time">2 minutes ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon" style="background: #f093fb;">S</div>
+                <div class="activity-content">
+                    <div class="activity-title">System backup completed</div>
+                    <div class="activity-time">15 minutes ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon" style="background: #4facfe;">D</div>
+                <div class="activity-content">
+                    <div class="activity-title">Database optimization finished</div>
+                    <div class="activity-time">1 hour ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon" style="background: #43e97b;">A</div>
+                <div class="activity-content">
+                    <div class="activity-title">API rate limit updated</div>
+                    <div class="activity-time">3 hours ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update date
+        const dateEl = document.getElementById('currentDate');
+        const now = new Date();
+        dateEl.textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        // Animate counter
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            const range = end - start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                obj.textContent = current.toLocaleString();
+                if (current === end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+
+        // Animate stats on load
+        animateValue('totalUsers', 0, 12847, 1500);
+        animateValue('activeSessions', 0, 1523, 1500);
+        
+        // Update server load with animation
+        let load = 0;
+        const loadInterval = setInterval(() => {
+            load++;
+            document.getElementById('serverLoad').textContent = load + '%';
+            if (load === 67) clearInterval(loadInterval);
+        }, 20);
+
+        // Update response time
+        let time = 0;
+        const timeInterval = setInterval(() => {
+            time += 3;
+            document.getElementById('responseTime').textContent = time + 'ms';
+            if (time === 189) clearInterval(timeInterval);
+        }, 20);
+
+        // Simulate live resource updates
+        setInterval(() => {
+            const cpu = Math.floor(Math.random() * 30) + 40;
+            const mem = Math.floor(Math.random() * 20) + 55;
+            const storage = Math.floor(Math.random() * 15) + 30;
+            
+            document.getElementById('cpuValue').textContent = cpu + '%';
+            document.getElementById('cpuProgress').style.width = cpu + '%';
+            
+            document.getElementById('memValue').textContent = mem + '%';
+            document.getElementById('memProgress').style.width = mem + '%';
+            
+            document.getElementById('storageValue').textContent = storage + '%';
+            document.getElementById('storageProgress').style.width = storage + '%';
+        }, 3000);
+    </script>
+</body>
+</html>
