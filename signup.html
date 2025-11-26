@@ -212,32 +212,27 @@
       color: #764ba2;
     }
 
-    /* Fixed message styles */
     .message {
       margin-top: 15px;
       padding: 12px;
       border-radius: 8px;
       font-size: 0.9rem;
       text-align: center;
-      display: none; /* Start hidden */
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      display: none;
     }
 
     .message.error {
-      display: block;
-      opacity: 1;
       background: #fee;
       color: #c33;
       border: 1px solid #fcc;
+      display: block;
     }
 
     .message.success {
-      display: block;
-      opacity: 1;
       background: #efe;
       color: #3c3;
       border: 1px solid #cfc;
+      display: block;
     }
 
     .password-requirements {
@@ -332,22 +327,22 @@
         <input type="password" id="suConfirmPassword" placeholder="Re-enter your password" required />
       </div>
 
-     <label class="remember-me">
-  <input type="checkbox" id="submember"/>
-  <span>Remember me after sign up</span>
-</label>
+      <label class="remember-me">
+        <input type="checkbox" id="suRemember" />
+        <span>Remember me after sign up</span>
+      </label>
 
-<button type="submit" class="signup-btn">Create Account</button>
-</form>
+      <button type="submit" class="signup-btn">Create Account</button>
+    </form>
 
-<div class="divider">
-  <span>OR</span>
-</div>
+    <div class="divider">
+      <span>OR</span>
+    </div>
 
-<div class="login-section">
-  Already have an account?
-  <a href="login.html" class="login-link">Sign in here</a>
-</div>
+    <div class="login-section">
+      Already have an account? 
+      <a href="login.html" class="login-link">Sign in here</a>
+    </div>
 
     <div id="suMsg" class="message"></div>
   </div>
@@ -441,10 +436,8 @@
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
-      // Reset message
       msg.className = "message";
-      msg.textContent = "";
+      msg.style.display = "none";
 
       const fullname = document.getElementById("suFullname").value.trim();
       const username = document.getElementById("suUsername").value.trim();
