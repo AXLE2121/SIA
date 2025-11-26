@@ -213,20 +213,22 @@
     }
 
     .message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      text-align: center;
-      display: none;
-    }
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  display: block; /* Change from 'none' to 'block' */
+  visibility: hidden; /* Hide but maintain layout */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-    .message.error {
-      background: #fee;
-      color: #c33;
-      border: 1px solid #fcc;
-      display: block;
-    }
+.message.error,
+.message.success {
+  visibility: visible;
+  opacity: 1;
+}
 
     .message.success {
       background: #efe;
@@ -435,57 +437,61 @@
     });
 
     form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      msg.className = "message";
-      msg.style.display = "none";
+  e.preventDefault();
+  msg.className = "message";
+  msg.style.display = "none";
 
-      const fullname = document.getElementById("suFullname").value.trim();
-      const username = document.getElementById("suUsername").value.trim();
-      const email = document.getElementById("suEmail").value.trim();
-      const password = document.getElementById("suPassword").value;
-      const confirm = document.getElementById("suConfirmPassword").value;
+  const fullname = document.getElementById("suFullname").value.trim();
+  const username = document.getElementById("suUsername").value.trim();
+  const email = document.getElementById("suEmail").value.trim();
+  const password = document.getElementById("suPassword").value;
+  const confirm = document.getElementById("suConfirmPassword").value;
 
-      // Validations
-      if (password !== confirm) {
-        msg.className = "message error";
-        msg.textContent = "Passwords do not match.";
-        return;
-      }
+  // Validations
+  if (password !== confirm) {
+    msg.className = "message error";
+    msg.textContent = "Passwords do not match.";
+    msg.style.display = "block"; // Add this line
+    return;
+  }
 
-      if (password.length < 8) {
-        msg.className = "message error";
-        msg.textContent = "Password must be at least 8 characters long.";
-        return;
-      }
+  if (password.length < 8) {
+    msg.className = "message error";
+    msg.textContent = "Password must be at least 8 characters long.";
+    msg.style.display = "block"; // Add this line
+    return;
+  }
 
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-        // Send verification email
-        await sendEmailVerification(cred.user);
+    // Send verification email
+    await sendEmailVerification(cred.user);
 
-        // Save extra info in Firestore
-        await setDoc(doc(db, "users", cred.user.uid), {
-          fullname,
-          username,
-          email,
-          createdAt: serverTimestamp(),
-        });
-
-        msg.className = "message success";
-        msg.textContent = "Account created successfully! Check your email to verify your account.";
-        form.reset();
-        strengthBar.style.width = "0";
-        
-        // Clear password requirements
-        document.querySelectorAll(".password-requirements li").forEach(li => {
-          li.classList.remove("met");
-        });
-      } catch (err) {
-        msg.className = "message error";
-        msg.textContent = err.message;
-      }
+    // Save extra info in Firestore
+    await setDoc(doc(db, "users", cred.user.uid), {
+      fullname,
+      username,
+      email,
+      createdAt: serverTimestamp(),
     });
+
+    msg.className = "message success";
+    msg.textContent = "Account created successfully! Check your email to verify your account.";
+    msg.style.display = "block"; // Add this line
+    form.reset();
+    strengthBar.style.width = "0";
+    
+    // Clear password requirements
+    document.querySelectorAll(".password-requirements li").forEach(li => {
+      li.classList.remove("met");
+    });
+  } catch (err) {
+    msg.className = "message error";
+    msg.textContent = err.message;
+    msg.style.display = "block"; // Add this line
+  }
+});
   </script>
 </body>
 </html>
