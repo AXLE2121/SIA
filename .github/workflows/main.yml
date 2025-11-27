@@ -1,0 +1,27 @@
+name: Netlify Deployment
+
+on:
+  push:
+    branches:
+      - main   # change to master if your branch is master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Deploy to Netlify
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: 'SIA'             # <--- folder where your login.html is located
+          production-branch: main        # change to master if needed
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Auto-deployed from GitHub Action"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
