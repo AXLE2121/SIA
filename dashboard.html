@@ -303,7 +303,7 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         // Not logged in – back to login page
-        window.location.href = "login.html";
+        window.location.href = "index.html";
         return;
       }
 
@@ -349,7 +349,7 @@
       } catch (err) {
         console.error(err);
       } finally {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       }
     });
   </script>
