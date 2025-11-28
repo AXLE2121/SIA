@@ -49,20 +49,20 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Save build output as an artifact to pass to deploy step
+      # Save build output as an artifact
       - name: Upload build output
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: SIA        # <-- your build/site folder
+          path: SIA      # <-- your build/static folder
 
 
   # ============================
-  # 🚀 JOB 3 — DEPLOY
+  # 🚀 JOB 3 — NETLIFY DEPLOYED
   # ============================
-  Netlify deploy:
+  netlify-deployed:
     runs-on: ubuntu-latest
-    needs: build    # <-- run only AFTER build succeeds
+    needs: build   # <-- run only AFTER build succeeds
     steps:
       - name: Download build output
         uses: actions/download-artifact@v4
@@ -72,10 +72,10 @@ jobs:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'SIA'   # <--- folder where your login.html is located
+          publish-dir: 'SIA'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Auto-deployed from GitHub Action Pipeline (Test → Build → Deploy)"
+          deploy-message: "Auto-deployed from GitHub Action Pipeline (Test → Build → Netlify Deployed)"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
