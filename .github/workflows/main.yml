@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run static validation
+      - name: Static test
         run: echo "No tests needed for plain HTML/CSS/JS project."
 
 
@@ -30,11 +30,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Prepare static build folder
+      - name: Prepare static build
         run: |
           echo "Preparing static build..."
           mkdir build
-          cp -r SIA/* build/
+          cp -r ./* build/
 
       - name: Upload build output
         uses: actions/upload-artifact@v4
@@ -58,10 +58,10 @@ jobs:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'build'   # deploy the prepared static folder
+          publish-dir: 'build'        # deploy the static folder
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Static HTML/CSS/JS site deployed via GitHub Actions"
+          deploy-message: "Static HTML site deployed via GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
