@@ -60,7 +60,7 @@ jobs:
   # ============================
   # 🚀 JOB 3 — DEPLOY
   # ============================
-  deploy:
+  Netlify deploy:
     runs-on: ubuntu-latest
     needs: build    # <-- run only AFTER build succeeds
     steps:
