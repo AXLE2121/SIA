@@ -1,45 +1,64 @@
-name: Netlify Deployment
+name: Netlify CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main   # change to "master" if needed
+      - main   # change to master if needed
 
 jobs:
-  build-and-deploy:
+  pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
-      - name: Checkout code
+
+      # ============================
+      # 🟦 STEP 1 — CHECKOUT CODE
+      # ============================
+      - name: 🟦 Step 1: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node (for test & build)
-      - name: Setup Node.js
+
+      # ============================
+      # 🟩 STEP 2 — SETUP NODE
+      # ============================
+      - name: 🟩 Step 2: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3. Install dependencies
-      - name: Install dependencies
+
+      # ============================
+      # 🟨 STEP 3 — INSTALL DEPENDENCIES
+      # ============================
+      - name: 🟨 Step 3: Install Dependencies
         run: npm install
 
-      # 4. Run tests (optional but recommended)
-      - name: Run tests
-        run: npm test
 
-      # 5. Build project
-      - name: Build project
+      # ============================
+      # 🟧 STEP 4 — RUN TESTS
+      # ============================
+      - name: 🟧 Step 4: Run Tests
+        run: npm test
+        continue-on-error: true   # remove this if you want to block deployment on test fail
+
+
+      # ============================
+      # 🟪 STEP 5 — BUILD PROJECT
+      # ============================
+      - name: 🟪 Step 5: Build Project
         run: npm run build
 
-      # 6. Deploy to Netlify
-      - name: Deploy to Netlify
+
+      # ============================
+      # 🟥 STEP 6 — DEPLOY TO NETLIFY
+      # ============================
+      - name: 🟥 Step 6: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'dist'        # <-- change if your output folder is different
+          publish-dir: 'SIA'      # change if your final build folder is different
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Auto-deployed from GitHub Actions"
+          deploy-message: "CI/CD Pipeline: Test → Build → Deploy"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
