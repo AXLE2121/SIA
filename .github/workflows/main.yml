@@ -3,10 +3,10 @@ name: Netlify Deployment
 on:
   push:
     branches:
-      - main   # change to master if your branch is master
+      - main   # change to "master" if needed
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,14 +14,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Deploy to Netlify
+      # 2. Setup Node (for test & build)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Run tests (optional but recommended)
+      - name: Run tests
+        run: npm test
+
+      # 5. Build project
+      - name: Build project
+        run: npm run build
+
+      # 6. Deploy to Netlify
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'SIA'             # <--- folder where your login.html is located
-          production-branch: main        # change to master if needed
+          publish-dir: 'dist'        # <-- change if your output folder is different
+          production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Auto-deployed from GitHub Action"
+          deploy-message: "Auto-deployed from GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
