@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Static test
-        run: echo "No tests needed for plain HTML/CSS/JS project."
+        run: echo "No tests required for plain HTML/CSS/JS project."
 
 
   # ============================
@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "Preparing static build..."
           mkdir build
-          cp -r ./* build/
+          rsync -av --exclude='build' ./ build/
 
       - name: Upload build output
         uses: actions/upload-artifact@v4
@@ -58,7 +58,7 @@ jobs:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'build'        # deploy the static folder
+          publish-dir: 'build'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Static HTML site deployed via GitHub Actions"
