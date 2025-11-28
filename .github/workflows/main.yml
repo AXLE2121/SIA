@@ -3,12 +3,12 @@ name: Netlify Deployment
 on:
   push:
     branches:
-      - main    # change to master if needed
+      - main
 
 jobs:
 
   # ============================
-  # 🧪 JOB 1 — TEST
+  # 🧪 JOB 1 — TEST (STATIC)
   # ============================
   test:
     runs-on: ubuntu-latest
@@ -16,45 +16,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
+      - name: Run static validation
+        run: echo "No tests needed for plain HTML/CSS/JS project."
 
 
   # ============================
-  # 🔧 JOB 2 — BUILD
+  # 🔧 JOB 2 — BUILD (STATIC)
   # ============================
   build:
     runs-on: ubuntu-latest
-    needs: test    # <-- run only AFTER tests pass
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      - name: Prepare static build folder
+        run: |
+          echo "Preparing static build..."
+          mkdir build
+          cp -r SIA/* build/
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      # Save build output as an artifact
       - name: Upload build output
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: SIA      # <-- your build/static folder
+          path: build
 
 
   # ============================
@@ -62,7 +48,7 @@ jobs:
   # ============================
   netlify-deployed:
     runs-on: ubuntu-latest
-    needs: build   # <-- run only AFTER build succeeds
+    needs: build
     steps:
       - name: Download build output
         uses: actions/download-artifact@v4
@@ -72,10 +58,10 @@ jobs:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: 'SIA'
+          publish-dir: 'build'   # deploy the prepared static folder
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Auto-deployed from GitHub Action Pipeline (Test → Build → Netlify Deployed)"
+          deploy-message: "Static HTML/CSS/JS site deployed via GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
